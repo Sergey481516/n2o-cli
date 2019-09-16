@@ -30,7 +30,7 @@ function createDir(path) {
 
 function resolveOptionsPath(args) {
   let path;
-  const commandEntity = args.template.split(':')[1];
+  const commandEntity = args.template && args.template.split(':')[1];
   const isConfigExists = fs.existsSync('.n2o-clirc.json');
 
   if (isConfigExists && !path) {
