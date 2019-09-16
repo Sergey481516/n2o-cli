@@ -1,6 +1,6 @@
 {
-  "name": "@sergey481516/n2o-cli",
-  "version": "1.0.0",
+  "name": "n2o-cli",
+  "version": "0.0.1",
   "description": "A CLI to bootstrap n2o project and generate custom components",
   "main": "src/index.js",
   "bin": {
