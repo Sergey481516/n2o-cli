@@ -1,0 +1,36 @@
+{
+  "name": "@sergey481516/n2o-cli",
+  "version": "1.0.0",
+  "description": "A CLI to bootstrap n2o project and generate custom components",
+  "main": "src/index.js",
+  "bin": {
+    "@sergey/n2o-cli": "bin/n2o-cli",
+    "n2o-cli": "bin/n2o-cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "n2o",
+    "cli",
+    "n2o-cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arg": "^4.1.1",
+    "chalk": "^2.4.2",
+    "esm": "^3.2.25",
+    "execa": "^2.0.4",
+    "glob": "^7.1.4",
+    "handlebars": "^4.1.2",
+    "inquirer": "^6.5.0",
+    "listr": "^0.14.3",
+    "mkdirp": "^0.5.1",
+    "normalize-path": "^3.0.0",
+    "pkg-install": "^1.0.0"
+  }
+}
