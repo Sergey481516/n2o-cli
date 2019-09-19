@@ -14,7 +14,7 @@ const { getFilename, compileTemplate, createFile, createDir } = require('./utils
 
 const Template = require('./templates/Javascript');
 
-function prepareFiles(template, options) {
+const prepareFiles = (template, options) => {
   if (!Array.isArray(template)) {
     return [];
   }
@@ -35,18 +35,19 @@ function prepareFiles(template, options) {
       source
     };
   });
-}
+};
 
-async function createFilesFromTemplate(options) {
+const createFilesFromTemplate = async (options) => {
   if (Template[options.template]) {
-
-    createDir(options.path);
+    if (options.path) {
+      createDir(options.path);
+    }
 
     const files = prepareFiles(Template[options.template], options);
 
     optionalFiles.map(paramName => {
       if (options[paramName]) {
-        const template = Template[`create:${paramName}`];
+        const template = Template[`generate:${paramName}`];
 
         files.push(...prepareFiles(template, options));
       }
@@ -57,17 +58,19 @@ async function createFilesFromTemplate(options) {
     console.log(chalk.red('Команда не найдена!'));
     process.exit(0);
   }
-}
+};
 
-function showHelp() {
+const showHelp = () => {
   const help = `
-  Init new project: n2o-cli init [--repository=path] [name]
-  Generator usage: n2o-cli create:[point] [options]
+  Init new project: n2o-cli init [--repository=path] [name] [--repository]
+  Creator usage: n2o-cli create:[customization point] [options]
+  Generator usage: n2o-cli generate:[generator point] [name] [path]
   
-  Points: [project, widget, action, cell, control, field, fieldset, region, snippet, test, story]
+  Customization\`s points: [widget, cell, control, field, fieldset, region, snippet]
+  Generator\`s points: [test, story, cosmos]
   
   Options:
-    
+    --repository - user repository to clone n2o-boilerplate
     -h, --help
     -s, --story - create storybook template with file
     -c, --cosmos - create cosmos template with file
@@ -76,9 +79,9 @@ function showHelp() {
 
   console.log(help);
   process.exit();
-}
+};
 
-function createProject(repository = DEFAULT_PROJECT_REPOSITORY, projectName = DEFAULT_PROJECT_NAME) {
+const createProject = (repository = DEFAULT_PROJECT_REPOSITORY, projectName = DEFAULT_PROJECT_NAME) => {
   const installDirPath = process.cwd() + '/' + projectName;
 
   if (fs.existsSync(installDirPath)) {
@@ -87,38 +90,35 @@ function createProject(repository = DEFAULT_PROJECT_REPOSITORY, projectName = DE
   }
 
   return new Listr([
-   {
-     title: 'Создаем проект N2O',
-     task: () => new Listr([
-       {
-         title: 'Клонируем проект',
-         task: () => execa('git', ['clone', '--depth=1', repository, projectName])
-           .catch((err) => {
-             if (err.exitCode === 128) {
-               console.log('Проект с таким именем уже создан');
+     {
+       title: 'Создаем проект N2O',
+       task: () => new Listr([
+         {
+           title: 'Клонируем проект',
+           task: () => execa('git', ['clone', '--depth=1', repository, projectName])
+             .catch((err) => {
+               console.log(err);
                process.exit();
-             }
+             })
+         },
+         {
+           title: 'Устанавливаем зависимости',
+           task: () => projectInstall({
+             cwd: installDirPath
            })
-       },
-       {
-         title: 'Устанавливаем зависимости',
-         task: () => projectInstall({
-           cwd: installDirPath
-         })
-       }
-     ])
-   }
-]);
-}
+         }
+       ])
+     }
+  ]);
+};
 
-function createTemplate(options) {
-  return new Listr([
+const createTemplate = (options) =>
+  new Listr([
     {
       title: 'Создаем шаблон',
       task: () => createFilesFromTemplate(options)
     }
   ]);
-}
 
 module.exports = {
   createTemplate,

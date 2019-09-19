@@ -1,16 +1,15 @@
 const Command = {
   INIT: 'init',
   CREATE_WIDGET: 'create:widget',
-  CREATE_ACTION: 'create:action',
   CREATE_CELL: 'create:cell',
   CREATE_CONTROL: 'create:control',
   CREATE_FIELD: 'create:field',
   CREATE_FIELDSET: 'create:fieldset',
   CREATE_REGION: 'create:region',
   CREATE_SNIPPET: 'create:snippet',
-  CREATE_TEST: 'create:test',
-  CREATE_STORY: 'create:story',
-  CREATE_COSMOS: 'create:cosmos'
+  GENERATE_TEST: 'generate:test',
+  GENERATE_STORY: 'generate:story',
+  GENERATE_COSMOS: 'generate:cosmos'
 };
 
 const DEFAULT_PROJECT_NAME = 'n2o-project';
@@ -22,24 +21,20 @@ const optionalFiles = [
   'story'
 ];
 
-const DEFAULT_DIR_PATH = './packages/custom/src';
-const DEFAULT_COMPONENTS_PREFIX = DEFAULT_DIR_PATH + '/components';
-
-const DefaultPath = {
-  [Command.CREATE_WIDGET]: DEFAULT_COMPONENTS_PREFIX + '/widgets',
-  [Command.CREATE_ACTION]: DEFAULT_DIR_PATH + '/actions',
-  [Command.CREATE_CELL]: DEFAULT_COMPONENTS_PREFIX + '/cells',
-  [Command.CREATE_CONTROL]: DEFAULT_COMPONENTS_PREFIX + '/controls',
-  [Command.CREATE_FIELD]: DEFAULT_COMPONENTS_PREFIX + '/fields',
-  [Command.CREATE_FIELDSET]: DEFAULT_COMPONENTS_PREFIX + '/fieldsets',
-  [Command.CREATE_REGION]: DEFAULT_COMPONENTS_PREFIX + '/regions',
-  [Command.CREATE_SNIPPET]: DEFAULT_COMPONENTS_PREFIX + '/snippets',
+const DefaultName = {
+  [Command.CREATE_WIDGET]: 'CustomWidget',
+  [Command.CREATE_CELL]: 'CustomCell',
+  [Command.CREATE_CONTROL]: 'CustomControl',
+  [Command.CREATE_FIELD]: 'CustomField',
+  [Command.CREATE_FIELDSET]: 'CustomFieldset',
+  [Command.CREATE_REGION]: 'CustomRegion',
+  [Command.CREATE_SNIPPET]: 'CustomSnippet',
 };
 
 module.exports = {
   Command,
-  DefaultPath,
+  DefaultName,
   optionalFiles,
   DEFAULT_PROJECT_NAME,
-  DEFAULT_PROJECT_REPOSITORY
+  DEFAULT_PROJECT_REPOSITORY,
 };

@@ -1,13 +1,13 @@
 const defaultTemplate = `
 import React from 'react';
-import {{name}} from '../{{name}}';
+import {{fileName}} from '../{{fileName}}';
 
 const props = {
   
 };
 
 export default {
-  component: {{name}},
+  component: {{fileName}},
   props: props,
   reduxState: {},
   fetch: [],

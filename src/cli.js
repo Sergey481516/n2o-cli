@@ -1,19 +1,19 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
+const chalk = require('chalk');
 
 const { createProject, showHelp, createTemplate } = require('./main');
-const { resolveOptionsPath } = require('./utils');
+const { resolveOptionsName, resolveOptionsPath } = require('./utils');
 const { Command } = require('./constants');
 
-async function promptForMissingOptions(options) {
+const promptForMissingOptions = async (options) => {
   const questions = [];
 
-  if (!options.name && options.template !== Command.INIT) {
+  if (!options.help && !options.name && (options.template !== Command.INIT)) {
     questions.push({
       type: 'input',
       name: 'name',
       message: 'Enter file name:',
-      default: 'N2OCustomWidget'
     });
   }
 
@@ -23,9 +23,9 @@ async function promptForMissingOptions(options) {
     ...options,
     name: options.name || answers.name,
   };
-}
+};
 
-function parseArgumentsIntoOptions(rawArgs) {
+const parseArgumentsIntoOptions = async (rawArgs) => {
   const args = arg({
     '--help': Boolean,
     '-h': '--help',
@@ -40,7 +40,7 @@ function parseArgumentsIntoOptions(rawArgs) {
   const template = args._[0];
 
   let parsedArgs = {
-    help: args['--help'] || !template,
+    help: args['--help'],
     story: args['--story'] || false,
     cosmos: args['--cosmos'] || false,
     test: args['--test'] || false,
@@ -50,19 +50,26 @@ function parseArgumentsIntoOptions(rawArgs) {
     repository: args['--repository']
   };
 
-  parsedArgs = resolveOptionsPath(parsedArgs);
+  if (!template && !parsedArgs.help) {
+    console.log(chalk.red('ERROR: Command not found!'));
+    return showHelp();
+  }
+
+  if (!parsedArgs.help) {
+    parsedArgs = await promptForMissingOptions(parsedArgs);
+    parsedArgs = resolveOptionsName(parsedArgs);
+    parsedArgs = resolveOptionsPath(parsedArgs);
+  }
 
   return parsedArgs;
-}
+};
 
-async function cli(args) {
-  let options = parseArgumentsIntoOptions(args);
+const cli = async (args) => {
+  let options = await parseArgumentsIntoOptions(args);
 
   if (options.help) {
     return showHelp();
   }
-
-  options = await promptForMissingOptions(options);
 
   let tasks = null;
 
@@ -76,7 +83,7 @@ async function cli(args) {
     console.error(err);
     process.exit(1);
   });
-}
+};
 
 
 module.exports = {

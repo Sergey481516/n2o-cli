@@ -6,7 +6,7 @@ module.exports = [
     template: defaultTemplate,
     optionsMapper: options => ({
       ...options,
-      path: options.path + '/__fixtures__',
+      path: (options.path || '.') + '/__fixtures__',
       fileName: options.name,
       name: 'default',
     })
