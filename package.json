@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "description": "A CLI to bootstrap n2o project and generate custom components",
   "main": "src/index.js",
+  "homepage": "https://github.com/Sergey481516/n2o-cli",
   "bin": {
     "@sergey/n2o-cli": "bin/n2o-cli",
     "n2o-cli": "bin/n2o-cli"

@@ -55,7 +55,7 @@ const createFilesFromTemplate = async (options) => {
 
     await files.map(createFile);
   } else {
-    console.log(chalk.red('Команда не найдена!'));
+    console.log(chalk.red('Шаблон не найден!'));
     process.exit(0);
   }
 };
@@ -120,8 +120,23 @@ const createTemplate = (options) =>
     }
   ]);
 
+const runCustomScript = (executableScript) => {
+  const actions = executableScript.split(' ');
+
+  return new Listr([
+    {
+      title: 'Запускаем пользовательский скрипт',
+      task: () => Promise.all(actions.map(action => execa('npm run ' + action).catch((err) => {
+        console.error(err);
+        return process.exit(1);
+      })))
+    }
+  ]);
+};
+
 module.exports = {
   createTemplate,
   showHelp,
-  createProject
+  createProject,
+  runCustomScript,
 };

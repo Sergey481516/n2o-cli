@@ -2,8 +2,8 @@ const fs = require('fs');
 const Handlebars = require('handlebars');
 const mkdirp = require('mkdirp');
 
-const { optionalFiles, DefaultName } = require('./constants');
-const _defaultConfig = require('./.n2o-clirc.json');
+const { optionalFiles, DefaultName, CONFIG_FILENAME } = require('./constants');
+const _defaultConfig = require('./' + CONFIG_FILENAME);
 
 const getFilename = (options, postfix) =>
   `${(options.path || '.')}/${options.name}${postfix}.js`;
@@ -25,19 +25,21 @@ const createDir = (path) => {
   }
 };
 
+const getConfig = () => {
+  const isUserConfigExists = fs.existsSync(CONFIG_FILENAME);
+
+  return isUserConfigExists ? require(process.cwd() + '/' + CONFIG_FILENAME) : _defaultConfig;
+};
+
 const resolveOptionsPath = (args) => {
-  let path;
+  let path = args.path;
   const commandEntity = args.template && args.template.split(':')[1];
-  const isUserConfigExists = fs.existsSync('.n2o-clirc.json');
+  const config = getConfig();
   const isOptionalFile = optionalFiles.includes(commandEntity);
 
   if (!path && !isOptionalFile) {
-    const _rcConfig =
-      isUserConfigExists ? require(process.cwd() + '/' + '.n2o-clirc.json') : _defaultConfig;
     const splitCommand = args.template.split(':');
-    path = _rcConfig.src + _rcConfig.paths[splitCommand[1]] + '/' + args.name;
-  } else {
-    path = args.path;
+    path = config.src + config.paths[splitCommand[1]] + '/' + args.name;
   }
 
   return {
@@ -51,6 +53,34 @@ const resolveOptionsName = (args) => ({
   name: args.name || DefaultName[args.template]
 });
 
+const getConfigExecutableScripts = (args) => {
+  const { scripts } = getConfig();
+
+  return scripts[args.template] || null;
+};
+
+const find = (collection, func) => {
+  if (!collection || typeof collection !== 'object')
+    return console.error('First argument must be a collection!');
+  if (!func || typeof func !== 'function')
+    return console.error('Second argument must be a function');
+
+  let result;
+  const collectionKeys = Object.keys(collection);
+
+  for (let i = 0; i < collectionKeys.length; i++) {
+    const currentKey = collectionKeys[i];
+    const funcResult = func(collection[currentKey], currentKey);
+
+    if (funcResult) {
+      result = collection[currentKey];
+      break;
+    }
+  }
+
+  return result;
+};
+
 module.exports = {
   getFilename,
   compileTemplate,
@@ -58,4 +88,6 @@ module.exports = {
   createDir,
   resolveOptionsName,
   resolveOptionsPath,
+  getConfigExecutableScripts,
+  find,
 };

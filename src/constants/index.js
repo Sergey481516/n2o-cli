@@ -12,6 +12,7 @@ const Command = {
   GENERATE_COSMOS: 'generate:cosmos'
 };
 
+const CONFIG_FILENAME = '.n2o-clirc.json';
 const DEFAULT_PROJECT_NAME = 'n2o-project';
 const DEFAULT_PROJECT_REPOSITORY = 'https://git.i-novus.ru/framework/n2o-boilerplate.git';
 
@@ -37,4 +38,5 @@ module.exports = {
   optionalFiles,
   DEFAULT_PROJECT_NAME,
   DEFAULT_PROJECT_REPOSITORY,
+  CONFIG_FILENAME,
 };

@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "start": "build:libs:watch start:app",
+    "start": "build:theme build:libs:watch start:app",
     "cosmos": "build:theme build:libs cosmos"
   },
-  "src": "./packages/custom",
+  "src": "./packages/custom/src",
   "paths": {
     "widget": "/components/widgets",
     "cell": "/components/cells",

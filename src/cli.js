@@ -2,14 +2,14 @@ const arg = require('arg');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 
-const { createProject, showHelp, createTemplate } = require('./main');
-const { resolveOptionsName, resolveOptionsPath } = require('./utils');
+const { createProject, showHelp, createTemplate, runCustomScript } = require('./main');
+const { resolveOptionsName, resolveOptionsPath, getConfigExecutableScripts, find } = require('./utils');
 const { Command } = require('./constants');
 
 const promptForMissingOptions = async (options) => {
   const questions = [];
 
-  if (!options.help && !options.name && (options.template !== Command.INIT)) {
+  if (!options.name && Command[options.template]) {
     questions.push({
       type: 'input',
       name: 'name',
@@ -56,7 +56,6 @@ const parseArgumentsIntoOptions = async (rawArgs) => {
   }
 
   if (!parsedArgs.help) {
-    parsedArgs = await promptForMissingOptions(parsedArgs);
     parsedArgs = resolveOptionsName(parsedArgs);
     parsedArgs = resolveOptionsPath(parsedArgs);
   }
@@ -66,17 +65,25 @@ const parseArgumentsIntoOptions = async (rawArgs) => {
 
 const cli = async (args) => {
   let options = await parseArgumentsIntoOptions(args);
+  options = await promptForMissingOptions(options);
 
   if (options.help) {
     return showHelp();
   }
 
   let tasks = null;
+  const standardCommand = find(Command, (value) => value === options.template);
+  const configExecutableScript = getConfigExecutableScripts(options);
 
   if (options.template === Command.INIT) {
     tasks = createProject(options.repository, options.name);
-  } else {
+  } else if (standardCommand) {
     tasks = createTemplate(options);
+  } else if (configExecutableScript) {
+    tasks = runCustomScript(configExecutableScript);
+  } else {
+    console.log(chalk.red('Команда не найдена!'));
+    return process.exit(0);
   }
 
   tasks.run().catch(err => {
